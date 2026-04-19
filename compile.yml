@@ -44,3 +44,30 @@ jobs:
           name: Genesis-ROM
           path: out/rom.bin
           
+name: Build Genesis ROM
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install SGDK Toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-m68k-linux-gnu make
+          git clone https://github.com/Stephane-D/SGDK.git ../sgdk
+
+      - name: Compile GhostLab_MD
+        run: |
+          # Esto une tus sprites de 6x6 y tu música XGM
+          make -f ../sgdk/makefile.gen GCC=m68k-linux-gnu-gcc
+          
+      - name: Upload ROM
+        uses: actions/upload-artifact@v3
+        with:
+          name: GhostLab-ROM
+          path: out/rom.bin
+          

@@ -1,0 +1,19 @@
+name: Compile GhostLab MD
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup SGDK
+        run: |
+          git clone https://github.com/Stephane-D/SGDK.git ../sgdk
+          echo "SGDK_PATH=$GITHUB_WORKSPACE/../sgdk" >> $GITHUB_ENV
+
+      - name: Build ROM
+        run: |
+          # Aquí es donde ocurre la magia de 16 bits
+          make -f ../sgdk/makefile.gen GCC=m68k-elf-gcc
+          

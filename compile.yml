@@ -17,3 +17,30 @@ jobs:
           # Aquí es donde ocurre la magia de 16 bits
           make -f ../sgdk/makefile.gen GCC=m68k-elf-gcc
           
+name: Build Genesis ROM
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install SGDK Toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-m68k-linux-gnu make
+          git clone https://github.com/Stephane-D/SGDK.git ../sgdk
+
+      - name: Compile GhostLab_MD
+        run: |
+          # Usamos el makefile de SGDK para unir tu musica XGM y tus sprites
+          make -f ../sgdk/makefile.gen GCC=m68k-linux-gnu-gcc
+          
+      - name: Upload ROM
+        uses: actions/upload-artifact@v3
+        with:
+          name: Genesis-ROM
+          path: out/rom.bin
+          
